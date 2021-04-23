@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+  # namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2-proxy
+    spec:
+      containers:
+      - args:
+        - --provider=google
+        - --email-domain=*
+        - --upstream=http://trashmanager.ddns.net
+        - --http-address=0.0.0.0:4180
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          value: 168197751233-abjvbi1q9lqe0p0iabr7t7njqr3tq0at.apps.googleusercontent.com
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          value: ZpSDTnVLJzEkVFv87T-MOlle
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          value: "1234567890123456"
+        - name: OAUTH2_PROXY_COOKIE_SECURE             
+          value: "false"
+        - name: OAUTH2_PROXY_REDIRECT_URL
+          value: http://trahsmanager.ddns.net
+        image: quay.io/oauth2-proxy/oauth2-proxy:latest
+        imagePullPolicy: Always
+        name: oauth2-proxy
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+  #namespace: kube-system
+spec:
+  ports:
+  - name: http
+    port: 4180
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    k8s-app: oauth2-proxy

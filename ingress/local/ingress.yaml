@@ -1,0 +1,58 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-oauth
+  # annotations:
+  #  nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/oauth2"
+        backend:
+          service:
+            name: oauth2-service
+            port:
+              number: 4180
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-httpd
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "http://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host:31353/oauth2/start?rd=$escaped_request_uri"
+  #  nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "localhost"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/httpd"
+        backend:
+          service:
+            name: httpd-service
+            port:
+              number: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-keycloak
+  # annotations:
+  #  nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "localhost.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: keycloak-service
+            port:
+              number: 8080
