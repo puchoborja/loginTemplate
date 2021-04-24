@@ -13,7 +13,7 @@ spec:
         path: "/oauth2"
         backend:
           service:
-            name: oauth2-proxy
+                  name: oauth2-service
             port:
               number: 4180
 ---
@@ -37,3 +37,23 @@ spec:
             name: httpd-service
             port:
               number: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  # annotations:
+  #  nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: "trashmanager.ddns.net"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/auth"
+        backend:
+          service:
+            name: keycloak-service
+            port:
+              number: 8080
+        

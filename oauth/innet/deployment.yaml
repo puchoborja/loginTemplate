@@ -17,21 +17,25 @@ spec:
     spec:
       containers:
       - args:
-        - --provider=google
+        - --http-address=0.0.0.0:4180
         - --email-domain=*
         - --upstream=http://trashmanager.ddns.net
-        - --http-address=0.0.0.0:4180
-        env:
-        - name: OAUTH2_PROXY_CLIENT_ID
-          value: 168197751233-abjvbi1q9lqe0p0iabr7t7njqr3tq0at.apps.googleusercontent.com
-        - name: OAUTH2_PROXY_CLIENT_SECRET
-          value: ZpSDTnVLJzEkVFv87T-MOlle
-        - name: OAUTH2_PROXY_COOKIE_SECRET
-          value: "1234567890123456"
-        - name: OAUTH2_PROXY_COOKIE_SECURE             
-          value: "false"
-        - name: OAUTH2_PROXY_REDIRECT_URL
-          value: http://trahsmanager.ddns.net
+        - --client-id=testClient
+        - --client-secret=30bbe7c7-6914-4e89-bdd5-7f6b7c15943b
+        #- --login-url=http://localhost:31353/auth/realms/master/protocol/openid-connect/auth
+        #- --redeem-url=http://localhost:31353/auth/realms/master/protocol/openid-connect/token
+        #- --profile-url=http://localhost:31353/auth/realms/master/protocol/openid-connect/userinfo
+        #- --validate-url=http://localhost:31353/auth/realms/master/protocol/openid-connect/userinfo
+        - --keycloak-group=testGroup
+        - --cookie-secure=false
+        - --cookie-secret=1234567890123456
+        - --provider=oidc
+        - --oidc-issuer-url=http://trashmanager.ddns.net/auth/realm/master
+        - --insecure-oidc-allow-unverified-email=true
+        - --redirect-url=http://trashmanager.ddns.net/oauth2/callback
+
+
+
         image: quay.io/oauth2-proxy/oauth2-proxy:latest
         imagePullPolicy: Always
         name: oauth2-proxy
@@ -46,7 +50,7 @@ kind: Service
 metadata:
   labels:
     k8s-app: oauth2-proxy
-  name: oauth2-proxy
+  name: oauth2-service
   #namespace: kube-system
 spec:
   ports:
