@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: ingress-oauth2
   # annotations:
   #  nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
@@ -20,10 +20,10 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-1
+  name: ingress-httpd
   annotations:
     nginx.ingress.kubernetes.io/auth-url: "http://$host/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "http://$host/oauth2/start?rd=$escaped_request_uri"
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host/oauth2/start?rd=/"
   #  nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
